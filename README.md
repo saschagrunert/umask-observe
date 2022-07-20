@@ -9,6 +9,7 @@ Run via:
     -v /sys/kernel/debug:/sys/kernel/debug \
     --pull always \
     --privileged \
+    --pid host \
     --rm \
     -it \
     quay.io/saschagrunert/umask:latest
