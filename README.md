@@ -1,4 +1,4 @@
-# umask [![Quay](https://quay.io/repository/saschagrunert/umask/status)](https://quay.io/repository/saschagrunert/umask)
+# umask-observe [![quay.io](https://quay.io/repository/saschagrunert/umask/status)](https://quay.io/repository/saschagrunert/umask)
 
 Observing umask changes for processes as well as containers.
 
