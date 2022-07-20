@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+if [[ -n "$1" ]]; then
+    set +e
+    CTR=$(grep -oE "[[:xdigit:]]{64}" "/proc/$1/cgroup" 2>/dev/null)
+
+    if [[ -n $CTR ]]; then
+        echo -n ", ID: ${CTR:0:13}"
+    fi
+    set -e
+else
+    TMPDIR="$(mktemp -d)"
+    trap 'rm -rf -- "$TMPDIR"' EXIT
+    echo "Running in $TMPDIR"
+
+    BPFTRACE_FILE="$TMPDIR/umask.bt"
+
+    cat <<EOT >>"$BPFTRACE_FILE"
+#!/usr/bin/env bpftrace
+
+tracepoint:syscalls:sys_enter_umask
+{
+  time("%T - ");
+  printf("%s (PID: %d", comm, pid);
+  system("$0 %d", pid);
+  printf("): %04o\n",  args->mask);
+}
+EOT
+    bpftrace --unsafe "$BPFTRACE_FILE"
+fi
